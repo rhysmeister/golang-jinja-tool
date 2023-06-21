@@ -20,6 +20,19 @@ func init() {
 	flag.StringVar(&variables, "v", "", "Variables for Jinja2 template.")
 }
 
+func processVarsIntoMap(vars string) map[string]any {
+	var m map[string]any
+	var ss []string
+
+	ss = strings.Split(vars, ",")
+	m = make(map[string]any)
+	for _, pair := range ss {
+		z := strings.Split(pair, "=")
+		m[z[0]] = z[1]
+	}
+	return m
+}
+
 func main() {
 	flag.Parse()
 
@@ -33,9 +46,10 @@ func main() {
 		content = strings.TrimSpace(string(temp))
 	}
 
+	vars_map := processVarsIntoMap(variables)
+
 	j2, err := jinja2.NewJinja2("example", 1,
-		jinja2.WithGlobal(strings.Split(variables, "=")[0],
-			strings.Split(variables, "=")[1])) // no vars yet
+		jinja2.WithGlobals(vars_map))
 	if err != nil {
 		panic(err)
 	}

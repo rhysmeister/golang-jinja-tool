@@ -23,3 +23,18 @@ EOF
 
 go run main.go -t /tmp/hello_world.j2 -v 'name=World'
 ```
+
+Further tests with multiple variables
+
+```bash
+go run main.go -t "Hello {{ name }} {{ second }}" -v 'name=World,second=Blah'
+go run main.go -t "Hello {{ name }} {{ second }} {{ num |int * 2 }}" -v 'name=World,second=Blah,num=99'
+```
+
+```bash
+cat << EOF > /tmp/hello_world.j2
+Hello {{ first_name }} {{ last_name }}, you are {{ age }}
+EOF
+
+go run main.go -t /tmp/hello_world.j2 -v 'first_name=Rhys,last_name=Campbell,age=40'
+```
